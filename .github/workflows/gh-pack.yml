@@ -20,6 +20,11 @@ jobs:
       - run: echo "name - ${{ steps.info.outputs.name }}"
       - run: echo "version - ${{ steps.info.outputs.version }}"
       # Setup .npmrc file to publish to GitHub Packages
+      
+  publish-github-package:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/setup-node@v3
         with:
           node-version: '20.x'
