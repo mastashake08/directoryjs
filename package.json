@@ -1,6 +1,6 @@
 {
   "name": "shake-file",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Pure Javascript package for using the File System API",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mastashake08/directoryjs.git"
+    "url": "https://github.com/mastashake08/directoryjs.git"
   },
   "keywords": [
     "file",
