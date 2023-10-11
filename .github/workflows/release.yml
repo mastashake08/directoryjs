@@ -3,7 +3,7 @@ name: Releases
 on: 
   push:
     tags:
-    - '*'
+    - 'v*'
 
 jobs:
 
@@ -17,4 +17,4 @@ jobs:
       with:
         generateReleaseNotes: true
         makeLatest: true
-        draft: true
+        draft: false
