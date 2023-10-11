@@ -1,6 +1,6 @@
 {
-  "name": "@mastashake08/shake-file",
-  "version": "1.1.8",
+  "name": "shake-file",
+  "version": "1.1.9",
   "description": "Pure Javascript package for using the File System API",
   "main": "index.js",
   "scripts": {
