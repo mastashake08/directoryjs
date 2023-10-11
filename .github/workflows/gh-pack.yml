@@ -10,6 +10,15 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+     
+      - name: package.json info
+        id: info
+        uses: jaywcjlove/github-action-package@main
+        with:
+          rename: '@mastashake08/shake-file'
+
+      - run: echo "name - ${{ steps.info.outputs.name }}"
+      - run: echo "version - ${{ steps.info.outputs.version }}"
       # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v3
         with:
@@ -18,7 +27,6 @@ jobs:
           # Defaults to the user or organization that owns the workflow file
           scope: '@mastashake08'
       - run: npm ci
-      - run: cat /home/runner/work/_temp/.npmrc
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
