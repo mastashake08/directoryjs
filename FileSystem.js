@@ -1,3 +1,4 @@
+import { ShakeFile } from "./ShakeFile";
 class FileSystem {
     constructor (options = {}) {
         this.fileHandler = {}
@@ -18,24 +19,14 @@ class FileSystem {
         return this.dirHandle;
       }
 
-    async  saveFile(data) {
-        try {
-         // create a new handle
-        const newHandle = await window.showSaveFilePicker();
-      
-        // create a FileSystemWritableFileStream to write to
-        const writableStream = await newHandle.createWritable();
-      
-        // write our file
-        await writableStream.write(data);
-      
-        // close the file and write the contents to disk.
-        await writableStream.close();
-        return true   
-        } catch (error) {
-            alert(error.message)
-            return false
-        }
+    
+    async getFileContents() {
+        this.sfile = new ShakeFile(this.file, this)
+        return await this.sfile.data;
+    }
+
+    addToDom () {
+        return this.sfile.addToDom()
     }
 }
 
