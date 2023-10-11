@@ -17,7 +17,8 @@ class ShakeFile {
          
            // write our file
            console.log(this.obj)
-           await writableStream.write(new Blob([this.obj.value]));
+           let my_uint8_array = Uint8Array.from(this.obj.value, c => c.charCodeAt(0)); 
+           await writableStream.write(new Blob([my_uint8_array], {type: this.data.kind}));
          
            // close the file and write the contents to disk.
            await writableStream.close();
