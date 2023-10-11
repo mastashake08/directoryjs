@@ -17,3 +17,4 @@ jobs:
       with:
         generateReleaseNotes: true
         makeLatest: true
+        draft: true
