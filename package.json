@@ -1,0 +1,24 @@
+{
+  "name": "directoryjs",
+  "version": "1.0.0",
+  "description": "Pure Javascript package for using the File System API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mastashake08/directoryjs.git"
+  },
+  "keywords": [
+    "file",
+    "system",
+    "api"
+  ],
+  "author": "Mastashake",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mastashake08/directoryjs/issues"
+  },
+  "homepage": "https://github.com/mastashake08/directoryjs#readme"
+}
