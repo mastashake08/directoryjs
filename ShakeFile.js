@@ -17,8 +17,10 @@ class ShakeFile {
          
            // write our file
            console.log(this.obj)
-           let my_uint8_array = Uint8Array.from(this.obj.value, c => c.charCodeAt(0)); 
-           await writableStream.write(new Blob([my_uint8_array], {type: 'text/plain'}));
+           var enc = new TextEncoder();
+           var data = enc.encode(this.obj.value)
+           console.log(data)
+           await writableStream.write(new Blob([data]));
          
            // close the file and write the contents to disk.
            await writableStream.close();
@@ -37,10 +39,11 @@ class ShakeFile {
          
            // create a FileSystemWritableFileStream to write to
            const writableStream = await newHandle.createWritable();
+           
+           let my_uint8_array = Uint8Array.from(this.obj.value, c => c.charCodeAt(0)); 
+           
+           await writableStream.write(new Blob([my_uint8_array], {type: this.file.type}));
          
-           // write our file
-           console.log(this.obj)
-           await writableStream.write(new Blob(this.obj.value));
          
            // close the file and write the contents to disk.
            await writableStream.close();
@@ -194,10 +197,10 @@ class ShakeFile {
                         this.obj.style.height = '300px'
                         this.obj.value = dataUrl
                         const save = document.createElement('button')
-                        save.innerHTML = 'Save File'
+                        save.innerHTML = 'Save Text File'
                         console.log('save')
                         save.onclick = () => {
-                            this.saveBinaryFile()
+                            this.saveFile()
                         }    
                         this.mainDiv.appendChild(this.obj)
 
@@ -209,6 +212,7 @@ class ShakeFile {
         reader.readAsBinaryString(file)
         reader.onload = () => {
             const dataUrl = reader.result
+            console.log(dataUrl)
             this.obj = document.createElement('textarea')
             this.obj.disabled = false
             this.obj.style.resize = 'both'
@@ -217,10 +221,10 @@ class ShakeFile {
             this.obj.value = dataUrl
             this.mainDiv.appendChild(this.obj)
             const save = document.createElement('button')
-                        save.innerHTML = 'Save File'
+                        save.innerHTML = 'Save Binary File'
                         console.log('save')
                         save.onclick = () => {
-                            this.saveFile()
+                            this.saveBinaryFile()
                         }
             this.obj.after(save)  
         }
