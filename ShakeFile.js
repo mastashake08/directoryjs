@@ -1,29 +1,41 @@
 class ShakeFile {
-    constructor (file) {
-        this.file = file
-        this.data = this.getData()
+    constructor () {
+        this.file = null
         this.obj = null
-        this.mainDiv = {}
+        this.mainDiv = document.createElement('div')
+        this.mainDiv.id = 'main-div'
+
+        document.body.appendChild(this.mainDiv)
     }
+    getFilenameAndExtension(pathfilename){
+
+        var filenameextension = pathfilename.replace(/^.*[\\\/]/, '');
+        var filename = filenameextension.substring(0, filenameextension.lastIndexOf('.'));
+        var ext = filenameextension.split('.').pop();
+        
+        return [filename, ext];
+      
+    }
+
     async saveFile() {
         try {
+            const [filename] = this.getFilenameAndExtension(this.file.name);
+
             // create a new handle
            const newHandle = await window.showSaveFilePicker({
-            suggestedName: Date.now() + '.txt'
+            suggestedName: Date.now() + '-' + filename + '.txt'
            });
          
            // create a FileSystemWritableFileStream to write to
            const writableStream = await newHandle.createWritable();
          
            // write our file
-           console.log(this.obj)
-           var enc = new TextEncoder();
-           var data = enc.encode(this.obj.value)
-           console.log(data)
-           await writableStream.write(new Blob([data]));
+           let my_uint8_array = Uint8Array.from(this.obj.value, c => c.charCodeAt(0)); 
+           await writableStream.write(new Blob([my_uint8_array], {type: 'text/plain'}));
          
            // close the file and write the contents to disk.
            await writableStream.close();
+           alert('File SAVED!')
            return true   
            } catch (error) {
                alert(error.message)
@@ -32,18 +44,18 @@ class ShakeFile {
     }
     async saveBinaryFile() {
         try {
+            const [filename, ext] = this.getFilenameAndExtension(this.file.name);
             // create a new handle
            const newHandle = await window.showSaveFilePicker({
-            suggestedName: Date.now() + this.file.name 
+            suggestedName: Date.now() + filename + '.' + ext
            });
          
            // create a FileSystemWritableFileStream to write to
            const writableStream = await newHandle.createWritable();
-           
-           let my_uint8_array = Uint8Array.from(this.obj.value, c => c.charCodeAt(0)); 
-           
-           await writableStream.write(new Blob([my_uint8_array], {type: this.file.type}));
          
+           // write our file
+           let my_uint8_array = Uint8Array.from(this.obj.value, c => c.charCodeAt(0)); 
+           await writableStream.write(new Blob([my_uint8_array]), {type: this.file.kind});
          
            // close the file and write the contents to disk.
            await writableStream.close();
@@ -55,7 +67,6 @@ class ShakeFile {
     }
     async getData () {
         const buffer = await this.file.arrayBuffer()
-        console.log(buffer)
         const contents = {
             name: this.file.name,
             kind: this.file.kind,
@@ -73,43 +84,68 @@ class ShakeFile {
 
 
         }
+        this.data = contents
         return contents
+    }
+    async setFile(file) {
+        this.file = file
+    }
+    setProgress(reader) {
+        const progress = document.createElement('progress')
+        progress.id = Date.now().toString()
+        const label = document.createElement('label')
+        label.innerText = 'Progress:'
+        label.setAttribute('for', progress.id) 
+        label.appendChild(progress)
+        this.mainDiv.appendChild(label)
+        progress.appendChild(document.createElement('br'))
+        reader.onprogress = (evt) => {
+            progress.max = evt.total
+            progress.value = evt.loaded
+        }
+        reader.onloadend = () => {
+            this.fadeOut(label)
+        }
     }
 
     addToDom () {
-        this.mainDiv = document.createElement('div')
+        
+        this.mainDiv.innerHTML = ""
         this.mainDiv.style.resize = 'horizontal'
         this.mainDiv.style.overflow = 'auto'
         this.mainDiv.style.height = '100%'
-        this.mainDiv.style.width = '50%'
+        this.mainDiv.style.width = '100%'
         const reader = new FileReader()
         const file = this.file
         if(file.type.indexOf('audio') > -1) {
             this.setAudio(file, reader)
         } else if(file.type.indexOf('video') > -1) {
             this.setVideo(file, reader)
-        } else if(file.type.indexOf('text') > -1) {
+        } else if(file.type.indexOf('text/plain') > -1) {
             this.setText(file, reader)
         } else {
             this.setObject(file, reader)            
         }
-        const hr = document.createElement('hr')
         const div = document.createElement('div')
-        const displayText = document.createElement('button')
-        displayText.innerHTML = 'Display File As Text'
-        displayText.onclick = () => {
-            this.setText(file, reader)
+        div.className = 'actions'
+        if(file.type.indexOf('text') < 0) {
+            const displayText = document.createElement('button')
+            displayText.innerText = 'Display File As Text'
+            displayText.onclick = () => {
+                this.setText(file, reader)
+            }
+        displayText.after(document.createElement('br'))
+        div.appendChild(displayText)
         }
+        
         const displayBinary = document.createElement('button')
-        displayBinary.innerHTML = 'Display File As Binary'
+        displayBinary.innerText = 'Display File As Binary'
         displayBinary.onclick = () => {
             this.setBinary(file, reader)
         }
-        div.appendChild(displayText)
+        displayBinary.after(document.createElement('br'))
         div.appendChild(displayBinary)
-        this.mainDiv.appendChild(hr)
         this.mainDiv.appendChild(div)
-        document.body.appendChild(this.mainDiv)
         
     }
 
@@ -129,10 +165,8 @@ class ShakeFile {
                         this.obj.src = dataUrl
                         this.mainDiv.appendChild(this.obj)
                         const remotePlay = document.createElement('button')
-                        console.log(chrome)
                         remotePlay.style.display = 'none'
                         try {
-                            console.log(chrome.cast.isAvailable())
                             cast.framework.CastContext.getInstance().setOptions({
                                 receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
                                 autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
@@ -166,10 +200,9 @@ class ShakeFile {
                         this.obj.src = dataUrl
                         this.mainDiv.appendChild(this.obj)
                         const remotePlay = document.createElement('button')
-                        console.log(chrome)
+                     
                         remotePlay.style.display = 'none'
                         try {
-                            console.log(chrome.cast.isAvailable())
                             cast.framework.CastContext.getInstance().setOptions({
                                 receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
                                 autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
@@ -189,6 +222,7 @@ class ShakeFile {
     }
     setText(file, reader) {
         reader.readAsText(file)
+        this.setProgress(reader)
         reader.onload = () => {
                         const dataUrl = reader.result
                         this.obj = document.createElement('textarea')
@@ -197,10 +231,9 @@ class ShakeFile {
                         this.obj.style.height = '300px'
                         this.obj.value = dataUrl
                         const save = document.createElement('button')
-                        save.innerHTML = 'Save Text File'
-                        console.log('save')
+                        save.innerHTML = 'Save File'
                         save.onclick = () => {
-                            this.saveFile()
+                            this.saveBinaryFile()
                         }    
                         this.mainDiv.appendChild(this.obj)
 
@@ -210,19 +243,18 @@ class ShakeFile {
 
     setBinary(file, reader) {
         reader.readAsBinaryString(file)
+        this.setProgress(reader)
         reader.onload = () => {
             const dataUrl = reader.result
-            console.log(dataUrl)
             this.obj = document.createElement('textarea')
             this.obj.disabled = false
-            this.obj.style.resize = 'both'
             this.obj.style.width = '100%'
             this.obj.style.height = '300px'
+            this.obj.className = 'editable-binary'
             this.obj.value = dataUrl
             this.mainDiv.appendChild(this.obj)
             const save = document.createElement('button')
                         save.innerHTML = 'Save Binary File'
-                        console.log('save')
                         save.onclick = () => {
                             this.saveBinaryFile()
                         }
@@ -244,6 +276,20 @@ class ShakeFile {
                         
         }
     }
+
+    fadeOut(el) {
+        var opacity = 1; // Initial opacity
+        var interval = setInterval(function() {
+           if (opacity > 0) {
+              opacity -= 0.1;
+              el.style.opacity = opacity;
+           } else {
+              clearInterval(interval); // Stop the interval when opacity reaches 0
+              el.style.display = 'none'; // Hide the element
+              el.remove()
+           }
+        }, 100);
+     }
    
 }
 
