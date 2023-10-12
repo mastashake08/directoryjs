@@ -4,6 +4,8 @@ class ShakeFile {
         this.obj = null
         this.mainDiv = document.createElement('div')
         this.mainDiv.id = 'main-div'
+        this.encodedData = null
+        this.decodedData = ''
 
         document.body.appendChild(this.mainDiv)
     }
@@ -49,16 +51,16 @@ class ShakeFile {
            const newHandle = await window.showSaveFilePicker({
             suggestedName: Date.now() + filename + '.' + ext
            });
-         
+           this.encodedData = Uint8Array.from([...this.obj.value].map(ch => ch.charCodeAt())).buffer;
            // create a FileSystemWritableFileStream to write to
            const writableStream = await newHandle.createWritable();
          
            // write our file
-           let my_uint8_array = Uint8Array.from(this.obj.value, c => c.charCodeAt(0)); 
-           await writableStream.write(new Blob([my_uint8_array]), {type: this.file.kind});
+            await writableStream.write(new Blob([this.encodedData]), {type: this.file.kind});
          
            // close the file and write the contents to disk.
            await writableStream.close();
+           alert('File SAVED!')
            return true   
            } catch (error) {
                alert(error.message)
@@ -128,15 +130,15 @@ class ShakeFile {
         }
         const div = document.createElement('div')
         div.className = 'actions'
-        if(file.type.indexOf('text') < 0) {
-            const displayText = document.createElement('button')
-            displayText.innerText = 'Display File As Text'
-            displayText.onclick = () => {
-                this.setText(file, reader)
-            }
-        displayText.after(document.createElement('br'))
-        div.appendChild(displayText)
-        }
+        // if(file.type.indexOf('text') < 0) {
+        //     const displayText = document.createElement('button')
+        //     displayText.innerText = 'Display File As Text'
+        //     displayText.onclick = () => {
+        //         this.setText(file, reader)
+        //     }
+        // displayText.after(document.createElement('br'))
+        // div.appendChild(displayText)
+        // }
         
         const displayBinary = document.createElement('button')
         displayBinary.innerText = 'Display File As Binary'
@@ -164,24 +166,6 @@ class ShakeFile {
                         this.obj.style.marginBottom = '5px'
                         this.obj.src = dataUrl
                         this.mainDiv.appendChild(this.obj)
-                        const remotePlay = document.createElement('button')
-                        remotePlay.style.display = 'none'
-                        try {
-                            cast.framework.CastContext.getInstance().setOptions({
-                                receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
-                                autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
-                            });
-                            remotePlay.style.display = 'inline'
-                        } catch {
-                            remotePlay.style.display = 'none'
-                        }
-                        remotePlay.onclick = function(){
-                            this.obj.remote.prompt()
-                            return false;
-                          };
-                        
-                        remotePlay.innerHTML = 'Remote Play'
-                        this.obj.after(remotePlay)
         }
     }
 
@@ -199,67 +183,46 @@ class ShakeFile {
                         this.obj.style.height = '250px'
                         this.obj.src = dataUrl
                         this.mainDiv.appendChild(this.obj)
-                        const remotePlay = document.createElement('button')
-                     
-                        remotePlay.style.display = 'none'
-                        try {
-                            cast.framework.CastContext.getInstance().setOptions({
-                                receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
-                                autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
-                            });
-                            remotePlay.style.display = 'inline'
-                        } catch {
-                            remotePlay.style.display = 'none'
-                        }
-                        remotePlay.onclick = function(){
-                            this.obj.remote.prompt()
-                            return false;
-                          };
-                        
-                        remotePlay.innerHTML = 'Remote Play'
-                        this.obj.after(remotePlay)
         }
     }
-    setText(file, reader) {
-        reader.readAsText(file)
-        this.setProgress(reader)
-        reader.onload = () => {
-                        const dataUrl = reader.result
-                        this.obj = document.createElement('textarea')
-                        this.obj.style.resize = 'both'
-                        this.obj.style.width = '100%'
-                        this.obj.style.height = '300px'
-                        this.obj.value = dataUrl
-                        const save = document.createElement('button')
-                        save.innerHTML = 'Save File'
-                        save.onclick = () => {
-                            this.saveBinaryFile()
-                        }    
-                        this.mainDiv.appendChild(this.obj)
+    async setText(file, reader) {
+        const dataUrl = await file.text()
+    
+        this.obj = document.createElement('textarea')
+        this.obj.style.resize = 'both'
+        this.obj.style.width = '100%'
+        this.obj.style.height = '300px'
+        this.obj.value = dataUrl
+        const save = document.createElement('button')
+        save.innerHTML = 'Save File'
+        save.onclick = () => {
+         this.saveBinaryFile()
+        }    
+        this.mainDiv.appendChild(this.obj)
 
-                        this.obj.after(save)
-        }
+        this.obj.after(save)
     }
 
-    setBinary(file, reader) {
-        reader.readAsBinaryString(file)
-        this.setProgress(reader)
-        reader.onload = () => {
-            const dataUrl = reader.result
-            this.obj = document.createElement('textarea')
-            this.obj.disabled = false
-            this.obj.style.width = '100%'
-            this.obj.style.height = '300px'
-            this.obj.className = 'editable-binary'
-            this.obj.value = dataUrl
-            this.mainDiv.appendChild(this.obj)
-            const save = document.createElement('button')
-                        save.innerHTML = 'Save Binary File'
-                        save.onclick = () => {
-                            this.saveBinaryFile()
-                        }
-            this.obj.after(save)  
+    async setBinary(file, reader) {
+        const data = await file.arrayBuffer()
+        const uint = new Uint8Array(data)
+        console.log(uint)
+        for(let i = 0; i< uint.byteLength; ++i) {
+            this.decodedData += String.fromCharCode(uint[i])
         }
+        this.obj = document.createElement('textarea')
+        this.obj.disabled = false
+        this.obj.style.width = '100%'
+        this.obj.style.height = '300px'
+        this.obj.className = 'editable-binary'
+        this.obj.value = this.decodedData
+        this.mainDiv.appendChild(this.obj)
+        const save = document.createElement('button')
+                    save.innerHTML = 'Save Binary File'
+                    save.onclick = () => {
+                        this.saveBinaryFile()
+                    }
+        this.obj.after(save)  
     }
 
     setObject(file, reader) {
