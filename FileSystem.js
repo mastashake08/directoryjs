@@ -5,6 +5,7 @@ class FileSystem {
         this.file = {}
         this.options = options
         this.dirHandle = {}
+        this.sfile = new ShakeFile(this.file)
     }
 
     async getFile () {
@@ -21,8 +22,8 @@ class FileSystem {
 
     
     async getFileContents() {
-        this.sfile = new ShakeFile(this.file, this)
-        return await this.sfile.data;
+        this.sfile.setFile(this.file)
+        return await this.sfile.getData();
     }
 
     addToDom () {
