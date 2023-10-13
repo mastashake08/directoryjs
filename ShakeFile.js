@@ -1,20 +1,30 @@
+/** 
+ * @file Class representing the ShakeFile base class.
+ * @copyright Jyrone Parker 2023 
+ * @author Jyrone Parker <jyrone.parker@gmail.com>
+ * @version 1.4.2
+ */
 class ShakeFile {
+    /**
+     * Create a ShakeFile.
+     * @param {object} config - The config object.
+     * @param {File | Blob| null} config.file - The File/Blob to be acted on 
+     */
     constructor ({file = null, obj = null, showDom = false}) {
         this.file = file
         this.obj = obj
-        this.mainDiv = document.createElement('div')
-        this.mainDiv.id = 'main-div'
+       
         this.encodedData = null
         this.decodedData = ''
         this.showDom = showDom
-        document.body.appendChild(this.mainDiv)
         if(this.showDom) {
             this.addToDom()
         }
     }
 
     addToDom () {
-        
+        this.mainDiv = document.createElement('div')
+        this.mainDiv.id = 'main-div'
         this.mainDiv.innerHTML = ""
         this.mainDiv.style.resize = 'horizontal'
         this.mainDiv.style.overflow = 'auto'
@@ -51,6 +61,7 @@ class ShakeFile {
         displayBinary.after(document.createElement('br'))
         div.appendChild(displayBinary)
         this.mainDiv.appendChild(div)
+        document.body.appendChild(this.mainDiv)
         
     }
 
@@ -148,6 +159,10 @@ class ShakeFile {
                return false
            }
     }
+    /**
+     * 
+     * @returns Boolean 
+     */
     async saveFile() {
         try {
             const [filename] = this.getFilenameAndExtension(this.file.name);
