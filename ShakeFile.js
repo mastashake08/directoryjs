@@ -2,26 +2,31 @@
  * @file Class representing the ShakeFile base class.
  * @copyright Jyrone Parker 2023 
  * @author Jyrone Parker <jyrone.parker@gmail.com>
- * @version 1.4.2
+ * @version 1.4.4
  */
 class ShakeFile {
     /**
      * Create a ShakeFile.
+     * @class ShakeFile
      * @param {object} config - The config object.
      * @param {File | Blob| null} config.file - The File/Blob to be acted on 
+     * @param {Boolean} config.showDom - Boolean flag to determin if DOM elements should be created
      */
-    constructor ({file = null, obj = null, showDom = false}) {
+
+    encodedData;
+    decodedData;
+    constructor ({file = null, showDom = false}) {
         this.file = file
-        this.obj = obj
-       
-        this.encodedData = null
-        this.decodedData = ''
         this.showDom = showDom
         if(this.showDom) {
             this.addToDom()
         }
     }
-
+    /**
+     * @function addToDom
+     * Add file elements to DOM.
+     * @return {void} - no return type
+     */
     addToDom () {
         this.mainDiv = document.createElement('div')
         this.mainDiv.id = 'main-div'
