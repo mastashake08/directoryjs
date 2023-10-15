@@ -16,18 +16,18 @@ class ShakeFile {
      * @param {Boolean} config.showDom - Boolean flag to determin if DOM elements should be created
      */
 
-    encodedData;
-    decodedData;
-    #compressionStream;
-    #decompressionStream;
+    
     constructor ({file = null, showDom = false, compressionFormat="gzip", decompressionFormat="gzip"}) {
         this.file = file
         this.showDom = showDom
         if(this.showDom) {
             this.addToDom()
         }
-        this.#compressionStream = new ShakeCompressionStream(compressionFormat);
-        this.#decompressionStream = new ShakeDecompressionStream(decompressionFormat);
+        this.encodedData = null;
+        this.decodedData = null;
+        
+        this.compressionStream = new ShakeCompressionStream(compressionFormat);
+        this.decompressionStream = new ShakeDecompressionStream(decompressionFormat);
     }
     /**
      * @function addToDom
