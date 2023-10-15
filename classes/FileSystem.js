@@ -1,5 +1,9 @@
 import { ShakeFile } from "./ShakeFile";
 class FileSystem {
+    /**
+     * 
+     * @param {*} options 
+     */
     constructor (options = {}) {
         this.fileHandler = {}
         this.file = {}
@@ -7,7 +11,11 @@ class FileSystem {
         this.dirHandle = {}
         this.sfile = new ShakeFile(this.file)
     }
-
+    /**
+     * 
+     * @returns {FileSystem} FileSystem - a new instance of File System
+     */
+    
     async getFile () {
         const [fileHandle] = await window.showOpenFilePicker(this.options);
         this.fileHandler = fileHandle;
