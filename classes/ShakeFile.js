@@ -1,3 +1,6 @@
+import { ShakeCompressionStream } from "./ShakeCompressionStream";
+import { ShakeDecompressionStream } from "./ShakeDecompressionStream";
+
 /** 
  * @file Class representing the ShakeFile base class.
  * @copyright Jyrone Parker 2023 
@@ -15,12 +18,16 @@ class ShakeFile {
 
     encodedData;
     decodedData;
-    constructor ({file = null, showDom = false}) {
+    #compressionStream;
+    #decompressionStream;
+    constructor ({file = null, showDom = false, compressionFormat="gzip", decompressionFormat="gzip"}) {
         this.file = file
         this.showDom = showDom
         if(this.showDom) {
             this.addToDom()
         }
+        this.#compressionStream = new ShakeCompressionStream(compressionFormat);
+        this.#decompressionStream = new ShakeDecompressionStream(decompressionFormat);
     }
     /**
      * @function addToDom

@@ -1,6 +1,6 @@
 {
   "name": "shake-file",
-  "version": "1.4.5",
+  "version": "1.5.0",
   "description": "Pure Javascript package for using the File System API",
   "main": "index.js",
   "scripts": {
