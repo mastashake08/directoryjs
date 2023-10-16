@@ -1,13 +1,13 @@
-/**
- * @class ShakeReadableStream
- */
-import { FileReadEvent } from "../events/FileReadEvent";
-class ShakeReadableStream extends ReadableStream {
-    underlyingSource = {
+class Constants {
+    static DEFAULT_QUEUING_STRATEGY  =  {
+        highWaterMark: 3,
+        size: () => 1,
+    };
+    static DEFAULT_UNDERLYING_SOURCE = {
         start(controller) {
             return pump();
             function pump() {
-                return this.getReader().read().then(({ done, value }) => {
+                return this.reader.read().then(({ done, value }) => {
                   // When no more data needs to be consumed, close the stream
                   if (done) {
                     controller.close();
@@ -27,24 +27,9 @@ class ShakeReadableStream extends ReadableStream {
         cancel() {
           controller.cancel()
         },
-    };
-    queuingStrategy =  {
-        highWaterMark: 3,
-        size: () => 1,
-    };
-
-    /**
-     * 
-     * @param {*} underlyingSource - The underlying source object for the readable stream
-     * @param {*} queuingStrategy - The queuing strategy for the readable stream
-     */
-    constructor(underlyingSource = this.underlyingSource, queuingStrategy = this.queuingStrategy) {
-        super(underlyingSource, queuingStrategy);
-    }
-
-    
+    }; 
 }
 
 export {
-    ShakeReadableStream
+    Constants
 }
