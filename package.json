@@ -1,8 +1,9 @@
 {
   "name": "@mastashake08/shake-file",
-  "version": "2.0.1-alpha",
+  "version": "2.0.2-alpha",
   "description": "Pure Javascript package for using the File System API",
   "main": "index.js",
+  "module": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
