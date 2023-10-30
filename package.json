@@ -1,6 +1,6 @@
 {
-  "name": "shake-file",
-  "version": "1.5.1",
+  "name": "@mastashake08/directoryjs",
+  "version": "2.0.0-alpha",
   "description": "Pure Javascript package for using the File System API",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,8 @@
   "keywords": [
     "file",
     "system",
-    "api"
+    "api",
+    "FileReader API"
   ],
   "author": "Mastashake",
   "license": "GNU GPLv3",

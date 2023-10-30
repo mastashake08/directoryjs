@@ -1,9 +1,9 @@
-import { FileSystem }  from './classes/FileSystem'
+import { ShakeFS }  from './classes/ShakeFS'
 import { ShakeFile } from './classes/ShakeFile'
 import { ShakeCompressionStream } from './classes/ShakeCompressionStream'
 import { ShakeDecompressionStream } from './classes/ShakeDecompressionStream'
 export  {
-    FileSystem,
+    ShakeFS,
     ShakeFile,
     ShakeDecompressionStream,
     ShakeCompressionStream

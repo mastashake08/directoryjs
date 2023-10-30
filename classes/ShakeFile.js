@@ -14,6 +14,7 @@ class ShakeFile {
      * @param {object} config - The config object.
      * @param {File | Blob| null} config.file - The File/Blob to be acted on 
      * @param {Boolean} config.showDom - Boolean flag to determin if DOM elements should be created
+     * @param
      */
 
     
@@ -156,7 +157,7 @@ class ShakeFile {
             suggestedName: Date.now() + filename + '.' + ext
            });
            this.encodedData = Uint8Array.from([...this.obj.value].map(ch => ch.charCodeAt())).buffer;
-           // create a FileSystemWritableFileStream to write to
+           // create a ShakeFSWritableFileStream to write to
            const writableStream = await newHandle.createWritable();
          
            // write our file
@@ -184,7 +185,7 @@ class ShakeFile {
             suggestedName: Date.now() + '-' + filename + '.txt'
            });
          
-           // create a FileSystemWritableFileStream to write to
+           // create a ShakeFSWritableFileStream to write to
            const writableStream = await newHandle.createWritable();
          
            // write our file

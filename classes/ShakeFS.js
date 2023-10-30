@@ -1,5 +1,5 @@
 import { ShakeFile } from "./ShakeFile";
-class FileSystem {
+class ShakeFS {
     /**
      * 
      * @param {*} options 
@@ -13,7 +13,7 @@ class FileSystem {
     }
     /**
      * 
-     * @returns {FileSystem} FileSystem - a new instance of File System
+     * @returns {ShakeFS} ShakeFS - a new instance of File System
      */
     
     async getFile () {
@@ -39,4 +39,4 @@ class FileSystem {
     }
 }
 
-export { FileSystem }
+export { ShakeFS  }

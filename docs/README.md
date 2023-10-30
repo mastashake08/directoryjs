@@ -1,5 +1,5 @@
 # ShakeFile
-A Javascript package for working with files and filesystems using the [File](https://developer.mozilla.org/en-US/docs/Web/API/File) and [FileSystem](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API) APIs. Edit files from as high level as text to as low level as the binary. Includes [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) for ease of use in your existing applications.
+A Javascript package for working with files and ShakeFSs using the [File](https://developer.mozilla.org/en-US/docs/Web/API/File) and [ShakeFS](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API) APIs. Edit files from as high level as text to as low level as the binary. Includes [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) for ease of use in your existing applications.
 
 ## Build Stats
 [![npm version](https://badge.fury.io/js/shake-file.svg)](//npmjs.com/package/shake-file)
