@@ -128,7 +128,7 @@ class ShakeFile {
         return this.getStream().getReader(options)
     }
 
-    async getStream() {
+     getStream() {
         return this.file.stream()
     }
 
