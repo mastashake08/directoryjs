@@ -98,7 +98,7 @@ class ShakeFile {
             name: this.file.name,
             kind: this.file.kind,
             text: await this.file.text(),
-            stream: await this.file.stream(),
+            stream: this.getStream(),
             arrayBuffer: buffer,
             dataView: new DataView(buffer),
             int8Array: new Int8Array(buffer),
@@ -128,7 +128,7 @@ class ShakeFile {
         return this.getStream().getReader(options)
     }
 
-    getStream() {
+    async getStream() {
         return this.file.stream()
     }
 

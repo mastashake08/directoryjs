@@ -1,25 +1,34 @@
 import { ShakeFile } from "./ShakeFile";
 class ShakeFS {
+    
     /**
      * 
      * @param {*} options 
      */
-    constructor (options = {}) {
-        this.fileHandler = {}
-        this.file = {}
-        this.options = options
+    constructor ({
+        fileHandler = null,
+        file = null
+    }) {
+        this.fileHandler = fileHandler
+        this.file = file
         this.dirHandle = {}
-        this.sfile = new ShakeFile(this.file)
+        this.sfile = new ShakeFile({
+            file: this.file
+        })
     }
     /**
      * 
      * @returns {ShakeFS} ShakeFS - a new instance of File System
      */
     
-    async getFile () {
-        const [fileHandle] = await window.showOpenFilePicker(this.options);
+    async getFile ({
+        options = {}
+    }) {
+
+        const [fileHandle] = await window.showOpenFilePicker(options);
         this.fileHandler = fileHandle;
         this.file = await this.fileHandler.getFile();
+        this.setFile()
         return this.file;
     }
 
@@ -30,8 +39,11 @@ class ShakeFS {
 
     
     async getFileContents() {
-        this.sfile.setFile(this.file)
         return await this.sfile.getData();
+    }
+
+    setFile() {
+        return this.sfile.setFile(this.file)
     }
 
     addToDom () {
