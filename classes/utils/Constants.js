@@ -1,3 +1,4 @@
+import { FileReadEvent } from '../../events/FileReadEvent'
 class Constants {
     static DEFAULT_QUEUING_STRATEGY  =  {
         highWaterMark: 3,
